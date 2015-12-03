@@ -7,7 +7,6 @@ class Game
 	def play
 		9.times do
 			@board.show
-
 			win? ? break : make_turn
 		end
 		@board.show
@@ -46,12 +45,16 @@ class Game
 	end
 
 	def get_field
-		field = 0
-		until (1..9).include? field
+		field = nil
+		until (0...9).include? field 
 			puts "Where do you want to put #{@curr_symbol}?"
-			field = gets.chomp.to_i
+			field = gets.chomp.to_i - 1
+			unless @board.fields[field] == " "
+				puts "Please input number of any unoccupied field"
+				redo
+			end
 		end
-		field - 1
+		field
 	end
 end
 
