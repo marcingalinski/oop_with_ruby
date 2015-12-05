@@ -15,6 +15,7 @@ class Game
 	end
 
 	def play
+		ask_game_option
 		greet
 		run_game
 		give_result
