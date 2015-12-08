@@ -1,5 +1,5 @@
 module AI
-	def computer_guess
+	def ai_guess
 		choose_colors
 	end
 end

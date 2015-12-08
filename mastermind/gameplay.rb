@@ -2,6 +2,10 @@ module Gameplay
 
 	private
 
+	def set_player
+		@player = @ai ? "Computer" : "You"
+	end
+
 	def run_game
 		greet
 
@@ -35,17 +39,22 @@ module Gameplay
 			end
 		end
 
+		puts guess.join(' ') if @ai
 		update_status(guessed, misplaced)
+	end
+
+	def take_guess
+		@ai ? take_ai_guess : take_player_guess
 	end
 
 	def update_status(guessed, misplaced)
 		if guessed == 4
 			@win = true
-			@hint = "You guessed all of the colors!"
+			@hint = "#{@player} guessed all of the colors!"
 		elsif misplaced == 0
-			@hint = "You guessed #{guessed} colors exactly."
+			@hint = "#{@player} guessed #{guessed} colors exactly."
 		else		
-			@hint = "You guessed #{guessed} colors exactly,\n" \
+			@hint = "#{@player} guessed #{guessed} colors exactly,\n" \
 							"#{misplaced} colors was correct, but misplaced."
 		end
 	end

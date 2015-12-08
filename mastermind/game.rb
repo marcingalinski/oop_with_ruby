@@ -15,10 +15,12 @@ class Game
 		@ai = false
 		@chosen_colors = choose_colors
 		@hint = "Let's try!"
+		@player = "You"
 	end
 
 	def play
 		ask_game_option
+		set_player
 		run_game
 	end
 end

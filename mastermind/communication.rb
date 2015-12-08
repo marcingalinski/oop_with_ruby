@@ -23,11 +23,7 @@ module Communication
 		end
 	end
 
-	def take_guess
-		@ai ? computer_guess : player_guess
-	end
-
-	def  player_guess
+	def take_player_guess
 		guessed_colors = gets.chomp.split
 
 		until input_condition(guessed_colors)
@@ -36,6 +32,12 @@ module Communication
 		end
 
 		guessed_colors
+	end
+
+	def take_ai_guess
+		guess = ai_guess
+		puts guess.join
+		guess
 	end
 
 	def input_condition input
@@ -47,6 +49,6 @@ module Communication
 	end
 
 	def give_result
-		puts @win ? "You won!" : "You lost!"
+		puts @win ? "#{@player} won!" : "#{@player} lost!"
 	end
 end
