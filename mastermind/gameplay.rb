@@ -3,12 +3,16 @@ module Gameplay
 	private
 
 	def run_game
+		greet
+
 		10.times do |i|
 			puts "#{10 - i} attempts remaining"
 			check_guess
 			give_hint
 			break if @win
 		end
+
+		give_result
 	end
 
 	def check_guess
