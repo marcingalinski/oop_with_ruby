@@ -11,11 +11,15 @@ module Communication
 
 	def get_user_choice
 		user_choice = gets.chomp.split  
-		@ai = input_condition(user_choice)
+		@game.ai = input_condition(user_choice)
+		if @game.ai
+			@ai = AI.new
+			@game.chosen_colors = user_choice
+		end
 	end
 
 	def greet
-		if @ai
+		if @game.ai
 			puts "I'll guess now!"
 		else
 			puts "I've chosen four colors between #{colors.join(', ')}.\n" \
@@ -35,8 +39,8 @@ module Communication
 	end
 
 	def take_ai_guess
-		guess = ai_guess
-		puts guess.join
+		guess = @ai.guess
+		puts guess.join(' ')
 		guess
 	end
 
@@ -45,10 +49,10 @@ module Communication
 	end
 
 	def give_hint
-		puts @hint
+		puts @game.hint
 	end
 
 	def give_result
-		puts @win ? "#{@player} won!" : "#{@player} lost!"
+		puts @game.win ? "#{@game.player} won!" : "#{@game.player} lost!"
 	end
 end

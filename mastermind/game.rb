@@ -8,14 +8,10 @@ class Game
 	include Colors
 	include Communication
 	include Gameplay
-	include AI
+	GameState = Struct.new(:win, :ai, :chosen_colors, :hint, :player)
 
 	def initialize
-		@win = false
-		@ai = false
-		@chosen_colors = choose_colors
-		@hint = "Let's try!"
-		@player = "You"
+		@game = GameState.new(false, false, choose_colors, "Let's try!", 'You')
 	end
 
 	def play
