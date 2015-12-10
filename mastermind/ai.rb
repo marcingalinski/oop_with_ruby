@@ -3,33 +3,49 @@ require 'colors.rb'
 
 class AI
 	include Colors
-	AI = Struct.new(:last_guess, :guessed, :misplaced, :colors_weights)
+	AI = Struct.new(:last_guess, :guessed, :misplaced, :colors_positions, :history)
 
 	def initialize
-		@ai = AI.new([], 0, 0, {})
-		make_pts_hash
+		@ai = AI.new([], 0, 0, {}, [])
+		make_hash @ai.colors_positions
 	end
 	
 	def guess
-		choose_probable
+		@ai.last_guess = choose_guess
 	end
 
 	def hint(guessed, misplaced)
 		@ai.guessed = guessed
 		@ai.misplaced = misplaced
-		add_points
+		update_weights
+		@ai.history.push @ai.last_guess
 	end
 
 	private
 
-	def make_pts_hash
-		colors.each { |color| @ai.colors_weights.store(color, 0) }
-	end
+	def update_weights
+		if guessed_colors == 0
+			@ai.last_guess.each do |color|
+				@ai.colors_positions[color] = [0, 0, 0, 0]
+			end
+		elsif @ai.guessed == 0
+			@ai.last_guess.each_with_index do |color, index|
+				@ai.colors_positions[color].each { |weight| weight *= 1 + @ai.misplaced**2 }
+				@ai.colors_positions[color][index] = 0
+			end
+		# elsif @ai.misplaced == 0
+		# 	@ai.last_guess.each_with_index do |color, index|
+		# 		@ai.colors_positions[color].each_with_index do |weight, weight_index| 
+		# 			weight *= index == weight_index ? 0 : 1 + @ai.misplaced
+		# 		end
 
-	def add_points
-		@ai.last_guess.each do |color|
-			puts "#{@ai.colors_weights[color]} #{color}"
-			@ai.colors_weights[color] += guessed_colors
+		# 		@ai.colors_positions[color][index] *= 1 + @ai.guessed
+		# 	end
+		else
+			@ai.last_guess.each_with_index do |color, index|
+				@ai.colors_positions[color].each { |weight| weight *= 1 + @ai.misplaced**2 }
+				@ai.colors_positions[color][index] *= 1 + @ai.guessed**2
+			end
 		end
 	end
 
@@ -37,26 +53,32 @@ class AI
 		@ai.guessed + @ai.misplaced
 	end
 
-	def choose_probable
-		chosen_probable = []
-		probables = find_probable
+	def choose_guess
+		begin
+			guess = []
 
-		4.times do
-			chosen_probable.push(probables[rand(0...probables.size)])
-		end
+			for position in 0..3
+				probable = find_probable(position)
+				guess.push(probable[rand(0...probable.size)])
+			end
+		end while @ai.history.include? guess
 
-		chosen_probable
+		guess
 	end
 
-	def find_probable
-		probable_colors = colors
+	def find_probable position
+		probable = []
 
 		colors.each do |color|
-			(@ai.colors_weights[color] ** 2).times do
-				probable_colors.push color
-			end
+			@ai.colors_positions[color][position].times { probable.push color }
 		end
 
-		probable_colors
+		probable
 	end
-end
+
+	def make_hash hash
+		colors.each do |color| 
+			hash.store(color, Array.new(4, 1))
+		end
+	end
+end	

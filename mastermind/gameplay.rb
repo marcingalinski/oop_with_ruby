@@ -22,24 +22,27 @@ module Gameplay
 	def check_guess
 		guessed = 0
 		misplaced = 0
-		chosen = [] + @game.chosen_colors
-		guess = take_guess
+		chosen = Array.new(@game.chosen_colors)
+		guess = Array.new(take_guess)
 		
 		guess.each_with_index do |color, index|
 		 	if chosen[index] == color
 				guessed += 1
-				chosen[index] = 'match'
+				chosen[index] = 'x'
+				guess[index] = 'y'
 			end
 		end
 
 		guess.each_with_index do |color, index|
 		 	if chosen.include? color
 				misplaced += 1 
-				chosen[chosen.index(color)] = 'match'
+				chosen[chosen.index(color)] = 'x'
+				guess[index] = 'y'
 			end
 		end
 
 		update_status(guessed, misplaced)
+		hint_ai(guessed, misplaced) if @game.ai
 	end
 
 	def take_guess
@@ -56,7 +59,5 @@ module Gameplay
 			@game.hint = "#{@game.player} guessed #{guessed} colors exactly,\n" \
 									 "#{misplaced} colors was correct, but misplaced."
 		end
-
-		@ai.hint(guessed, misplaced) if @game.ai
 	end
 end

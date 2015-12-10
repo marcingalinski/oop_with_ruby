@@ -39,6 +39,7 @@ module Communication
 	end
 
 	def take_ai_guess
+		gets
 		guess = @ai.guess
 		puts guess.join(' ')
 		guess
@@ -50,6 +51,10 @@ module Communication
 
 	def give_hint
 		puts @game.hint
+	end
+
+	def hint_ai(guessed, misplaced)
+		@ai.hint(guessed, misplaced) unless @game.win
 	end
 
 	def give_result
