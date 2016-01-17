@@ -6,19 +6,22 @@ class Game
 
 	def play
 		9.times do
-			@board.show
-			win? ? break : make_turn
+			if win?
+				break
+			else
+				@board.show
+				make_turn
+			end
 		end
 		@board.show
-		invert_symbol
 		give_result
 	end
 
 	private
 
 	def make_turn
-		@board.set(get_field, @curr_symbol)
 		invert_symbol
+		@board.set(get_field, @curr_symbol)
 	end
 
 	def invert_symbol
@@ -46,7 +49,7 @@ class Game
 
 	def get_field
 		field = nil
-		until (0...9).include? field 
+		until (0...9).include? field
 			puts "Where do you want to put #{@curr_symbol}?"
 			field = gets.chomp.to_i - 1
 			unless @board.fields[field] == " "
@@ -59,10 +62,12 @@ class Game
 end
 
 class Board
+	attr_reader :fields
+
 	def initialize
 		@fields = Array.new(9, " ")
 	end
-	
+
 	def show
 		puts "1: #{@fields[0]} 2: #{@fields[1]} 3: #{@fields[2]}\n" \
 				 " ----|----|----\n" \
@@ -73,10 +78,6 @@ class Board
 
 	def set(field, value)
 		@fields[field] = value
-	end
-
-	def fields
-		@fields
 	end
 end
 
